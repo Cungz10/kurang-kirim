@@ -74,7 +74,7 @@
                                 </td>
                                 <td class="px-5 py-4 text-white font-medium text-sm">{{ $toko->nama_toko }}</td>
                                 <td class="px-5 py-4 text-center">
-                                    <form action="{{ route('toko.toggle', $toko) }}" method="POST" class="inline-block">
+                                    <form action="{{ route('toko.toggle-status', $toko) }}" method="POST" class="inline-block">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" class="group relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 transition-colors ease-in-out duration-200 {{ $toko->status == 1 ? 'bg-emerald-500' : 'bg-white/20' }}" title="Klik untuk mengubah status">
