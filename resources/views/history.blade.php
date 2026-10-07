@@ -1,123 +1,215 @@
 @extends('layouts.app')
-@section('title', 'Riwayat')
+
+@section('title', 'Riwayat Surat Jalan')
+
 @section('content')
-<div>
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+<div class="space-y-6">
+    <!-- Header with Action Buttons -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-white">Riwayat Surat Jalan</h1>
-            <p class="mt-1 text-sm text-slate-400">Daftar seluruh surat jalan yang telah diinput.</p>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-2">
+                <span class="h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
+                Arsip & Riwayat
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Riwayat Surat Jalan</h1>
+            <p class="mt-1 text-sm text-white/60">Daftar rekapan dokumen surat jalan yang tersimpan di sistem.</p>
         </div>
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-4 sm:mt-0">
-            <a href="{{ route('history.export', request()->query()) }}" class="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-2.5 text-sm font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-all duration-300">
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <div class="flex flex-wrap items-center gap-2.5">
+            <a href="{{ route('history.export', request()->query()) }}"
+               class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-all duration-300 shadow-sm active:scale-95">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
                 Export Excel
             </a>
-            <a href="{{ route('dashboard') }}" class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300">
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <a href="{{ route('dashboard') }}"
+               class="ios-btn-primary inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-white shadow-md active:scale-95">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+                </svg>
                 Tambah Baru
             </a>
         </div>
     </div>
 
-    {{-- Filters --}}
-    <div class="rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl p-5 mb-6">
-        <form method="GET" action="{{ route('history') }}" class="flex flex-col sm:flex-row gap-3">
-            <div class="flex-1">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode toko, nama toko, atau nomor SJ..." class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-300">
+    <!-- iOS Spotlight-Style Search & Filters Bar -->
+    <div class="ios-glass-card-subtle rounded-[24px] p-4 sm:p-5">
+        <form method="GET" action="{{ route('history') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+            <div class="sm:col-span-5 relative">
+                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode toko, nama toko, atau nomor SJ..."
+                       class="w-full ios-input pl-10 pr-4 py-2.5 text-xs sm:text-sm text-white placeholder-white/40">
             </div>
-            <input type="date" name="date_from" value="{{ request('date_from') }}" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-slate-100 focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-300 [color-scheme:dark]">
-            <input type="date" name="date_to" value="{{ request('date_to') }}" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-slate-100 focus:border-violet-500/50 focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-300 [color-scheme:dark]">
-            <button type="submit" class="rounded-xl bg-white/10 px-5 py-2.5 text-sm font-medium text-slate-200 hover:bg-white/15 transition-all duration-300">
-                <svg class="h-4 w-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>Cari
-            </button>
-            @if(request()->hasAny(['search','date_from','date_to']))
-                <a href="{{ route('history') }}" class="rounded-xl border border-white/10 px-5 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all duration-300 text-center">Reset</a>
-            @endif
+
+            <div class="sm:col-span-2">
+                <input type="date" name="date_from" value="{{ request('date_from') }}"
+                       class="w-full ios-input px-3 py-2.5 text-xs text-white [color-scheme:dark]" title="Dari Tanggal">
+            </div>
+
+            <div class="sm:col-span-2">
+                <input type="date" name="date_to" value="{{ request('date_to') }}"
+                       class="w-full ios-input px-3 py-2.5 text-xs text-white [color-scheme:dark]" title="Sampai Tanggal">
+            </div>
+
+            <div class="sm:col-span-3 flex items-center gap-2">
+                <button type="submit"
+                        class="flex-1 ios-btn-primary rounded-xl py-2.5 px-4 text-xs font-semibold text-white flex items-center justify-center gap-1.5">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    Cari
+                </button>
+                @if(request()->anyFilled(['search', 'date_from', 'date_to']))
+                    <a href="{{ route('history') }}"
+                       class="ios-btn-secondary rounded-xl py-2.5 px-3 text-xs font-medium text-white/70 hover:text-white text-center">
+                        Reset
+                    </a>
+                @endif
+            </div>
         </form>
     </div>
 
-    {{-- Table --}}
-    <div class="rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl shadow-black/20 overflow-hidden">
+    <!-- iOS Inset Grouped Table Card -->
+    <div class="ios-glass-card rounded-[32px] overflow-hidden relative shadow-2xl">
+        <div class="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none"></div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="border-b border-white/5 bg-white/[0.03]">
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 w-12">No</th>
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Kode Toko</th>
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Nama Toko</th>
-                        @php $dir = $sortDirection === 'asc' ? 'desc' : 'asc'; @endphp
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <a href="{{ route('history', array_merge(request()->query(), ['sort'=>'tgl_kirim','direction'=>$sortField==='tgl_kirim'?$dir:'asc'])) }}" class="inline-flex items-center gap-1 hover:text-white transition-colors">
+                    <tr class="border-b border-white/10 bg-white/[0.04]">
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-white/50 w-12">No</th>
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-white/50">Kode Toko</th>
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-white/50">Nama Toko</th>
+                        @php
+                            $nextDateDir = $sortField === 'tgl_kirim' && $sortDirection === 'asc' ? 'desc' : 'asc';
+                            $nextSjDir = $sortField === 'nomor_surat_jalan' && $sortDirection === 'asc' ? 'desc' : 'asc';
+                        @endphp
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-white/50">
+                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'tgl_kirim', 'direction' => $nextDateDir]) }}" class="inline-flex items-center gap-1 hover:text-white transition-colors">
                                 Tgl Kirim
-                                @if($sortField==='tgl_kirim')<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $sortDirection==='asc'?'M5 15l7-7 7 7':'M19 9l-7 7-7-7' }}"/></svg>@endif
+                                @if($sortField === 'tgl_kirim')
+                                    <svg class="h-3 w-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="{{ $sortDirection === 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}"/>
+                                    </svg>
+                                @endif
                             </a>
                         </th>
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <a href="{{ route('history', array_merge(request()->query(), ['sort'=>'nomor_surat_jalan','direction'=>$sortField==='nomor_surat_jalan'?$dir:'asc'])) }}" class="inline-flex items-center gap-1 hover:text-white transition-colors">
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-white/50">
+                            <a href="{{ request()->fullUrlWithQuery(['sort' => 'nomor_surat_jalan', 'direction' => $nextSjDir]) }}" class="inline-flex items-center gap-1 hover:text-white transition-colors">
                                 No. Surat Jalan
-                                @if($sortField==='nomor_surat_jalan')<svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $sortDirection==='asc'?'M5 15l7-7 7 7':'M19 9l-7 7-7-7' }}"/></svg>@endif
+                                @if($sortField === 'nomor_surat_jalan')
+                                    <svg class="h-3 w-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="{{ $sortDirection === 'asc' ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7' }}"/>
+                                    </svg>
+                                @endif
                             </a>
                         </th>
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">Lampiran</th>
-                        <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-400">Aksi</th>
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-white/50">Lampiran</th>
+                        <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-white/50">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5">
-                    @forelse($dataList as $i => $item)
-                        <tr class="hover:bg-white/[0.03] transition-colors duration-200">
-                            <td class="px-5 py-4 text-slate-400">{{ $dataList->firstItem() + $i }}</td>
-                            <td class="px-5 py-4"><span class="inline-flex items-center rounded-lg bg-violet-500/10 px-2.5 py-1 text-xs font-semibold text-violet-300">{{ $item->kode_toko }}</span></td>
-                            <td class="px-5 py-4 text-slate-200">{{ $item->toko->nama_toko ?? '-' }}</td>
-                            <td class="px-5 py-4 text-slate-300">{{ $item->tgl_kirim->format('d/m/Y') }}</td>
-                            <td class="px-5 py-4 text-slate-200 font-mono text-xs">{{ $item->nomor_surat_jalan }}</td>
-                            <td class="px-5 py-4">
-                                @if($item->lampiran)
-                                    <div class="flex items-center gap-2">
-                                        <a href="{{ $item->lampiran_url }}" target="_blank" class="inline-flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 transition-colors text-xs font-medium" title="Lihat">
-                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                            Lihat
+                <tbody class="divide-y divide-white/[0.07]">
+                    @if($dataList->count() > 0)
+                        @foreach($dataList as $index => $item)
+                            <tr class="hover:bg-white/[0.05] transition-colors duration-150">
+                                <td class="px-5 py-4 text-white/40 font-mono text-xs">{{ $dataList->firstItem() + $index }}</td>
+                                <td class="px-5 py-4">
+                                    <span class="inline-flex items-center rounded-full bg-blue-500/15 border border-blue-400/30 px-3 py-1 text-xs font-semibold text-blue-300 font-mono">
+                                        {{ $item->kode_toko }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-4 text-white font-medium">{{ $item->toko->nama_toko ?? '-' }}</td>
+                                <td class="px-5 py-4 text-white/70 font-mono text-xs tabular-nums">{{ $item->tgl_kirim ? $item->tgl_kirim->format('d/m/Y') : '-' }}</td>
+                                <td class="px-5 py-4 text-white/90 font-mono text-xs">{{ $item->nomor_surat_jalan }}</td>
+                                <td class="px-5 py-4">
+                                    @if($item->lampiran)
+                                        <div class="flex items-center gap-2">
+                                            <a href="{{ route('kurang-kirim.view', $item) }}" target="_blank"
+                                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 hover:bg-cyan-500/25 transition-all text-xs font-medium"
+                                               title="Lihat dokumen">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                                Lihat
+                                            </a>
+                                            <a href="{{ route('kurang-kirim.download', $item) }}"
+                                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 hover:bg-indigo-500/25 transition-all text-xs font-medium"
+                                               title="Unduh file">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                Unduh
+                                            </a>
+                                        </div>
+                                    @else
+                                        <span class="text-white/30 text-xs">—</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="{{ route('kurang-kirim.edit', $item) }}"
+                                           class="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/30 transition-all"
+                                           title="Edit">
+                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
                                         </a>
-                                        <a href="{{ route('kurang-kirim.download', $item) }}" class="inline-flex items-center gap-1.5 text-violet-400 hover:text-violet-300 transition-colors text-xs font-medium" title="Download">
-                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                            Unduh
-                                        </a>
+                                        <form action="{{ route('kurang-kirim.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data surat jalan ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="flex h-8 w-8 items-center justify-center rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-500/30 transition-all"
+                                                    title="Hapus">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </div>
-                                @else
-                                <span class="text-slate-600 text-xs">—</span>
-                                @endif
-                            </td>
-                            <td class="px-5 py-4">
-                                <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('kurang-kirim.edit', $item) }}" class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-all" title="Edit">
-                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                    </a>
-                                    <form action="{{ route('kurang-kirim.destroy', $item) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all" title="Hapus">
-                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
                         <tr>
                             <td colspan="7" class="px-5 py-16 text-center">
                                 <div class="flex flex-col items-center gap-3">
-                                    <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5">
-                                        <svg class="h-8 w-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    <div class="flex h-16 w-16 items-center justify-center rounded-[20px] bg-white/[0.06] border border-white/10 text-white/40">
+                                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
                                     </div>
-                                    <p class="text-slate-500 text-sm">Belum ada data surat jalan.</p>
-                                    <a href="{{ route('dashboard') }}" class="text-violet-400 hover:text-violet-300 text-sm font-medium transition-colors">+ Tambah data pertama</a>
+                                    <p class="text-white/60 text-sm">Belum ada data surat jalan yang cocok.</p>
+                                    <a href="{{ route('dashboard') }}" class="text-blue-400 hover:text-blue-300 text-xs font-semibold">+ Buat data surat jalan baru</a>
                                 </div>
                             </td>
                         </tr>
-                    @endforelse
+                    @endif
                 </tbody>
             </table>
         </div>
-        @if($dataList->hasPages())
-            <div class="border-t border-white/5 px-5 py-4">{{ $dataList->links() }}</div>
+
+        <!-- Pagination Bar -->
+        @if($dataList->lastPage() > 1)
+            <div class="border-t border-white/10 px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/[0.02]">
+                <p class="text-xs text-white/50">
+                    Menampilkan <span class="text-white font-medium">{{ $dataList->firstItem() }}</span> - <span class="text-white font-medium">{{ $dataList->lastItem() }}</span> dari <span class="text-white font-medium">{{ $dataList->total() }}</span> dokumen
+                </p>
+                <div class="flex items-center gap-1.5">
+                    @if($dataList->currentPage() > 1)
+                        <a href="{{ $dataList->previousPageUrl() }}" class="ios-btn-secondary rounded-lg px-3 py-1.5 text-xs text-white/80">Sebelumnya</a>
+                    @endif
+                    
+                    @for($p = 1; $p <= $dataList->lastPage(); $p++)
+                        @if ($p == $dataList->currentPage())
+                            <span class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all ios-btn-primary text-white font-bold">{{ $p }}</span>
+                        @else
+                            <a href="{{ $dataList->url($p) }}" class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all bg-white/5 text-white/60 hover:bg-white/10 hover:text-white">{{ $p }}</a>
+                        @endif
+                    @endfor
+
+                    @if($dataList->hasMorePages())
+                        <a href="{{ $dataList->nextPageUrl() }}" class="ios-btn-secondary rounded-lg px-3 py-1.5 text-xs text-white/80">Selanjutnya</a>
+                    @endif
+                </div>
+            </div>
         @endif
     </div>
 </div>

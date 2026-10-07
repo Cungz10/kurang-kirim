@@ -19,14 +19,16 @@ class KurangKirimController extends Controller
         return config('app.lampiran_disk', 'r2');
     }
 
-    /**
-     * Show the dashboard form.
-     */
     public function dashboard()
     {
         $tokoList = Toko::active()->orderBy('kode_toko')->get();
+        $stats = [
+            'totalSj'    => KurangKirim::where('status', 1)->count(),
+            'totalToko'  => Toko::count(),
+            'activeToko' => Toko::where('status', 1)->count(),
+        ];
 
-        return view('dashboard', compact('tokoList'));
+        return view('dashboard', compact('tokoList', 'stats'));
     }
 
     /**

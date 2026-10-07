@@ -1,90 +1,285 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+
+@section('title', 'Input Surat Jalan')
+
 @section('content')
-<div class="max-w-2xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-2xl font-bold text-white">Input Surat Jalan</h1>
-        <p class="mt-1 text-sm text-slate-400">Isi form di bawah untuk menambahkan data surat jalan baru.</p>
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- === iOS Quick Glance Widget Grid === -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Widget 1: Surat Jalan -->
+        <div class="ios-glass-card-subtle rounded-[24px] p-5 relative overflow-hidden group hover:border-white/30 transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-white/60">Surat Jalan</span>
+                <div class="flex h-9 w-9 items-center justify-center rounded-[12px] bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight tabular-nums">
+                {{ $stats['totalSj'] ?? 0 }}
+            </div>
+            <p class="text-xs text-white/50 mt-1">Dokumen terdaftar aktif</p>
+        </div>
+
+        <!-- Widget 2: Toko Mitra -->
+        <div class="ios-glass-card-subtle rounded-[24px] p-5 relative overflow-hidden group hover:border-white/30 transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-white/60">Master Toko</span>
+                <div class="flex h-9 w-9 items-center justify-center rounded-[12px] bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight tabular-nums">
+                {{ $stats['activeToko'] ?? 0 }} <span class="text-sm font-normal text-white/50">/ {{ $stats['totalToko'] ?? 0 }}</span>
+            </div>
+            <p class="text-xs text-white/50 mt-1">Toko aktif beroperasi</p>
+        </div>
+
+        <!-- Widget 3: Status Cloud -->
+        <div class="ios-glass-card-subtle rounded-[24px] p-5 relative overflow-hidden group hover:border-white/30 transition-all duration-300">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold uppercase tracking-wider text-white/60">Status Sistem</span>
+                <div class="flex h-9 w-9 items-center justify-center rounded-[12px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 tracking-tight">
+                Siap
+            </div>
+            <p class="text-xs text-white/50 mt-1">Penyimpanan & Lampiran siap</p>
+        </div>
     </div>
-    <div class="rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl shadow-black/20">
-        <div class="p-6 sm:p-8">
+
+    <!-- === Main Glass Card: Form Input Surat Jalan === -->
+    <div class="ios-glass-card rounded-[32px] relative overflow-hidden">
+        <!-- Top Specular Highlight Edge -->
+        <div class="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none"></div>
+
+        <div class="p-6 sm:p-10">
+            <!-- Header Section -->
+            <div class="mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-3">
+                    <span class="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                    Form Entri Data
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Input Surat Jalan Baru</h1>
+                <p class="mt-1 text-sm text-white/60">Lengkapi informasi toko, tanggal, nomor surat jalan, dan unggah lampiran dokumen.</p>
+            </div>
+
             <form id="mainForm" action="{{ route('kurang-kirim.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
-                {{-- Kode Toko --}}
+                <!-- Kode Toko -->
                 <div>
-                    <label for="toko_id" class="block text-sm font-medium text-slate-300 mb-2">Kode Toko <span class="text-rose-400">*</span></label>
+                    <label for="toko_id" class="block text-sm font-medium text-white/80 mb-2">
+                        Pilih Toko <span class="text-rose-400">*</span>
+                    </label>
                     <div class="relative">
-                        <select id="toko_id" name="toko_id" class="w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 focus:border-violet-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-300 cursor-pointer">
-                            <option value="" class="bg-slate-900">— Pilih Toko —</option>
+                        <select id="toko_id" name="toko_id" required class="w-full ios-input cursor-pointer">
+                            <option value="">— Cari & Pilih Toko —</option>
                             @foreach($tokoList as $toko)
-                                <option value="{{ $toko->id }}" class="bg-slate-900" {{ old('toko_id') == $toko->id ? 'selected' : '' }}>{{ $toko->kode_toko }} — {{ $toko->nama_toko }}</option>
+                                <option value="{{ $toko->id }}" {{ old('toko_id') == $toko->id ? 'selected' : '' }}>
+                                    {{ $toko->kode_toko }} — {{ $toko->nama_toko }}
+                                </option>
                             @endforeach
                         </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
-                            <svg class="h-4 w-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
                     </div>
-                    @error('toko_id')<p class="mt-2 text-xs text-rose-400">{{ $message }}</p>@enderror
+                    @error('toko_id')
+                        <p class="mt-1.5 text-xs text-rose-400">{{ $message }}</p>
+                    @else
+                        <p class="mt-1.5 text-xs text-white/40">Ketik kode atau nama toko untuk pencarian cepat.</p>
+                    @enderror
                 </div>
-                {{-- Tanggal Kirim --}}
-                <div>
-                    <label for="tgl_kirim" class="block text-sm font-medium text-slate-300 mb-2">Tanggal Kirim <span class="text-rose-400">*</span></label>
-                    <input type="date" id="tgl_kirim" name="tgl_kirim" value="{{ old('tgl_kirim', date('Y-m-d')) }}" class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 focus:border-violet-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-300 [color-scheme:dark]">
-                    @error('tgl_kirim')<p class="mt-2 text-xs text-rose-400">{{ $message }}</p>@enderror
+
+                <!-- Grid 2 Kolom: Tanggal & Nomor SJ -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- Tanggal Kirim -->
+                    <div>
+                        <label for="tgl_kirim" class="block text-sm font-medium text-white/80 mb-2">
+                            Tanggal Kirim <span class="text-rose-400">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="date" id="tgl_kirim" name="tgl_kirim" value="{{ old('tgl_kirim', date('Y-m-d')) }}" required
+                                class="w-full ios-input px-4 py-3 text-sm text-white [color-scheme:dark]">
+                        </div>
+                        @error('tgl_kirim')
+                            <p class="mt-1.5 text-xs text-rose-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Nomor Surat Jalan -->
+                    <div>
+                        <label for="nomor_surat_jalan" class="block text-sm font-medium text-white/80 mb-2">
+                            Nomor Surat Jalan <span class="text-rose-400">*</span>
+                        </label>
+                        <input type="text" id="nomor_surat_jalan" name="nomor_surat_jalan" value="{{ old('nomor_surat_jalan') }}" required placeholder="Contoh: SJ-2026-001"
+                            class="w-full ios-input px-4 py-3 text-sm text-white placeholder-white/30 font-mono">
+                        @error('nomor_surat_jalan')
+                            <p class="mt-1.5 text-xs text-rose-400">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
-                {{-- Nomor Surat Jalan --}}
+
+                <!-- File Upload: AirDrop Glass Zone -->
                 <div>
-                    <label for="nomor_surat_jalan" class="block text-sm font-medium text-slate-300 mb-2">Nomor Surat Jalan <span class="text-rose-400">*</span></label>
-                    <input type="text" id="nomor_surat_jalan" name="nomor_surat_jalan" value="{{ old('nomor_surat_jalan') }}" placeholder="Contoh: SJ-2026-001" class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:border-violet-500/50 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all duration-300">
-                    @error('nomor_surat_jalan')<p class="mt-2 text-xs text-rose-400">{{ $message }}</p>@enderror
-                </div>
-                {{-- File Upload --}}
-                <div>
-                    <label for="lampiran" class="block text-sm font-medium text-slate-300 mb-2">Lampiran File <span class="text-rose-400">*</span></label>
-                    <div id="dropZone" class="relative rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] p-8 hover:border-violet-500/30 hover:bg-white/[0.04] transition-all duration-300 cursor-pointer group">
-                        <input type="file" id="lampiran" name="lampiran" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                        <div id="uploadPlaceholder" class="flex flex-col items-center gap-3 text-center">
-                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400 group-hover:bg-violet-500/20 transition-all duration-300">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    <label for="lampiran" class="block text-sm font-medium text-white/80 mb-2">
+                        Lampiran File <span class="text-rose-400">*</span>
+                    </label>
+                    <div id="dropZone"
+                         class="relative rounded-[24px] border-2 border-dashed border-white/20 bg-white/[0.03] p-8 hover:border-blue-400/50 hover:bg-white/[0.06] transition-all duration-300 cursor-pointer group text-center">
+                        <input type="file" id="lampiran" name="lampiran" required accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
+                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+
+                        <!-- Placeholder View -->
+                        <div id="uploadPlaceholder" class="flex flex-col items-center gap-3">
+                            <div class="flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-blue-500/20 to-purple-500/20 text-blue-400 border border-white/15 group-hover:scale-110 group-hover:border-blue-400/50 transition-all duration-300 shadow-lg">
+                                <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                </svg>
                             </div>
                             <div>
-                                <p class="text-sm font-medium text-slate-300"><span class="text-violet-400">Klik untuk upload</span> atau drag & drop</p>
-                                <p class="mt-1 text-xs text-slate-500">PDF, JPG, PNG, DOC, DOCX, XLS, XLSX (maks. 10MB)</p>
+                                <p class="text-sm font-semibold text-white">
+                                    <span class="text-blue-400 underline decoration-blue-400/40 underline-offset-4">Pilih dokumen</span> atau tarik file ke sini
+                                </p>
+                                <p class="mt-1 text-xs text-white/50">Mendukung PDF, JPG, PNG, DOC, DOCX, XLS, XLSX (Maks. 10MB)</p>
                             </div>
                         </div>
-                        <div id="filePreview" class="hidden flex items-center gap-4">
-                            <div id="imgPreviewWrap" class="hidden shrink-0"><img id="imgPreview" class="h-20 w-20 rounded-lg object-cover border border-white/10" alt="Preview"></div>
-                            <div id="fileIconWrap" class="hidden shrink-0"><div class="flex h-14 w-14 items-center justify-center rounded-xl bg-violet-500/10"><svg class="h-7 w-7 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div></div>
-                            <div class="min-w-0 flex-1"><p id="fileName" class="text-sm font-medium text-slate-200 truncate"></p><p id="fileSize" class="text-xs text-slate-500 mt-0.5"></p></div>
-                            <button type="button" id="removeFile" class="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all z-20"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+
+                        <!-- Selected File Preview -->
+                        <div id="filePreview" class="hidden flex items-center gap-4 text-left p-2">
+                            <div id="imgPreviewWrap" class="hidden shrink-0">
+                                <img id="imgPreview" class="h-20 w-20 rounded-[16px] object-cover border border-white/20 shadow-md" alt="Preview">
+                            </div>
+                            <div id="fileIconWrap" class="hidden shrink-0">
+                                <div class="flex h-16 w-16 items-center justify-center rounded-[18px] bg-gradient-to-br from-blue-500/20 to-indigo-500/30 border border-white/20 text-blue-400">
+                                    <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-semibold uppercase tracking-wider mb-1">
+                                    Siap Unggah
+                                </div>
+                                <p id="fileName" class="text-sm font-medium text-white truncate"></p>
+                                <p id="fileSize" class="text-xs text-white/50 mt-0.5 font-mono"></p>
+                            </div>
+                            <button type="button" id="removeFile"
+                                    class="shrink-0 flex h-9 w-9 items-center justify-center rounded-full bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 border border-rose-500/30 transition-all z-20"
+                                    title="Hapus file">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
-                    @error('lampiran')<p class="mt-2 text-xs text-rose-400">{{ $message }}</p>@enderror
+                    @error('lampiran')
+                        <p class="mt-1.5 text-xs text-rose-400">{{ $message }}</p>
+                    @enderror
                 </div>
-                {{-- Buttons --}}
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4">
-                    <button type="submit" class="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:from-violet-500 hover:to-cyan-500 active:scale-[0.98] transition-all duration-300">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Submit
+
+                <!-- Form Buttons -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-6 border-t border-white/10">
+                    <button type="submit" class="flex-1 ios-btn-primary rounded-2xl py-3.5 px-6 font-semibold flex items-center justify-center gap-2 text-white shadow-lg">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Simpan Surat Jalan
                     </button>
-                    <button type="reset" id="resetBtn" class="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-slate-300 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300">Reset</button>
+                    <button type="reset" id="resetBtn" class="sm:w-auto ios-btn-secondary rounded-2xl py-3.5 px-6 font-medium text-white/80 hover:text-white">
+                        Reset Form
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 @endsection
+
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
-    // Initialize TomSelect for searchable dropdown
-    new TomSelect('#toko_id', {
-        create: false,
-        placeholder: '— Cari & Pilih Toko —',
-        maxOptions: 50,
+document.addEventListener('DOMContentLoaded', () => {
+    // TomSelect initialization
+    if (document.getElementById('toko_id')) {
+        new TomSelect('#toko_id', {
+            create: false,
+            placeholder: '— Cari & Pilih Toko —',
+            maxOptions: 50,
+        });
+    }
+
+    const fi = document.getElementById('lampiran');
+    const dz = document.getElementById('dropZone');
+    const ph = document.getElementById('uploadPlaceholder');
+    const pv = document.getElementById('filePreview');
+    const iw = document.getElementById('imgPreviewWrap');
+    const ip = document.getElementById('imgPreview');
+    const fw = document.getElementById('fileIconWrap');
+    const fn = document.getElementById('fileName');
+    const fs = document.getElementById('fileSize');
+    const rb = document.getElementById('removeFile');
+
+    function fmt(b) {
+        if (b < 1024) return b + ' B';
+        if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+        return (b / 1048576).toFixed(1) + ' MB';
+    }
+
+    function show(f) {
+        fn.textContent = f.name;
+        fs.textContent = fmt(f.size);
+        if (f.type.startsWith('image/')) {
+            const r = new FileReader();
+            r.onload = e => {
+                ip.src = e.target.result;
+                iw.classList.remove('hidden');
+                fw.classList.add('hidden');
+            };
+            r.readAsDataURL(f);
+        } else {
+            iw.classList.add('hidden');
+            fw.classList.remove('hidden');
+        }
+        ph.classList.add('hidden');
+        pv.classList.remove('hidden');
+        dz.classList.add('border-blue-400/50', 'bg-blue-500/10');
+    }
+
+    function clear() {
+        fi.value = '';
+        ph.classList.remove('hidden');
+        pv.classList.add('hidden');
+        iw.classList.add('hidden');
+        fw.classList.add('hidden');
+        dz.classList.remove('border-blue-400/50', 'bg-blue-500/10');
+    }
+
+    fi.addEventListener('change', e => {
+        if (e.target.files.length > 0) show(e.target.files[0]);
     });
 
-    const fi=document.getElementById('lampiran'),dz=document.getElementById('dropZone'),ph=document.getElementById('uploadPlaceholder'),pv=document.getElementById('filePreview'),iw=document.getElementById('imgPreviewWrap'),ip=document.getElementById('imgPreview'),fw=document.getElementById('fileIconWrap'),fn=document.getElementById('fileName'),fs=document.getElementById('fileSize'),rb=document.getElementById('removeFile');function fmt(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB'}function show(f){fn.textContent=f.name;fs.textContent=fmt(f.size);if(f.type.startsWith('image/')){const r=new FileReader();r.onload=e=>{ip.src=e.target.result;iw.classList.remove('hidden');fw.classList.add('hidden')};r.readAsDataURL(f)}else{iw.classList.add('hidden');fw.classList.remove('hidden')}ph.classList.add('hidden');pv.classList.remove('hidden');dz.classList.add('border-violet-500/30')}function clear(){fi.value='';ph.classList.remove('hidden');pv.classList.add('hidden');iw.classList.add('hidden');fw.classList.add('hidden');dz.classList.remove('border-violet-500/30')}fi.addEventListener('change',e=>{if(e.target.files.length>0)show(e.target.files[0])});rb.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();clear()});['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('border-violet-500/50','bg-violet-500/5')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('border-violet-500/50','bg-violet-500/5')}));document.getElementById('resetBtn').addEventListener('click',clear)
+    rb.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        clear();
+    });
+
+    ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => {
+        e.preventDefault();
+        dz.classList.add('border-blue-400', 'bg-blue-500/15');
+    }));
+
+    ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => {
+        e.preventDefault();
+        dz.classList.remove('border-blue-400', 'bg-blue-500/15');
+    }));
+
+    document.getElementById('resetBtn').addEventListener('click', clear);
 });
 </script>
 @endpush
